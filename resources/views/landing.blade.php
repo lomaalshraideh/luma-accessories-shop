@@ -198,35 +198,39 @@
         <a href="{{ url('main-products') }}" class="btn-link">View All Products</a>
       </div>
 
+      <!-- For the "Our New Arrivals" section -->
       <div class="swiper product-swiper open-up" data-aos="zoom-out">
         <div class="swiper-wrapper d-flex">
-
           @if(isset($products) && $products->count())
             @foreach($products as $product)
               <div class="swiper-slide">
-                <div class="product-item image-zoom-effect link-effect">
-                    <div class="image-holder position-relative">
-                        @if($product->images->first())
-                            <a href="#">
-                                <img src="{{ asset('storage/' . $product->images->first()->image_url) }}" alt="{{ $product->name }}" class="product-image img-fluid">
-                            </a>
-                        @endif
+                <div class="product-item image-zoom-effect link-effect h-100">
+                  <div class="image-holder position-relative">
+                    @if($product->images->first())
+                      <a href="{{ route('main-products.show', $product->id) }}">
+                        <img src="{{ asset('storage/' . $product->images->first()->image_url) }}" alt="{{ $product->name }}" class="product-image img-fluid">
+                      </a>
+                    @endif
 
-                        <a href="#" class="btn-icon btn-wishlist">
-                            <svg width="24" height="24" viewBox="0 0 24 24">
-                                <use xlink:href="#heart"></use>
-                            </svg>
+                    <a href="#" class="btn-icon btn-wishlist">
+                      <svg width="24" height="24" viewBox="0 0 24 24">
+                        <use xlink:href="#heart"></use>
+                      </svg>
+                    </a>
+
+                    <div class="product-content text-center">
+                      <h5 class="text-uppercase fs-5 mt-3">
+                        <a href="{{ route('main-products.show', $product->id) }}">{{ $product->name }}</a>
+                      </h5>
+                      <form action="{{ route('carts.store') }}" method="POST" class="d-inline">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <a href="javascript:void(0)" onclick="this.closest('form').submit()" class="text-decoration-none" data-after="Add to cart">
+                          <span>${{ number_format($product->price, 2) }}</span>
                         </a>
-
-                        <div class="product-content text-center">
-                            <h5 class="text-uppercase fs-5 mt-3">
-                                <a href="#">{{ $product->name }}</a>
-                            </h5>
-                            <a href="#" class="text-decoration-none" data-after="Add to cart">
-                                <span>${{ number_format($product->price, 2) }}</span>
-                            </a>
-                        </div>
+                      </form>
                     </div>
+                  </div>
                 </div>
               </div>
             @endforeach
@@ -235,7 +239,6 @@
               <p>No products available.</p>
             </div>
           @endif
-
         </div>
 
         <!-- Swiper pagination and navigation -->
@@ -549,29 +552,33 @@
             @if(isset($random_products) && $random_products->count())
             @foreach($random_products as $product)
               <div class="swiper-slide">
-                <div class="product-item image-zoom-effect link-effect">
-                    <div class="image-holder position-relative">
-                        @if($product->images->first())
-                            <a href="#">
-                                <img src="{{ asset('storage/' . $product->images->first()->image_url) }}" alt="{{ $product->name }}" class="product-image img-fluid">
-                            </a>
-                        @endif
+                <div class="product-item image-zoom-effect link-effect h-100">
+                  <div class="image-holder position-relative">
+                    @if($product->images->first())
+                      <a href="{{ route('main-products.show', $product->id) }}">
+                        <img src="{{ asset('storage/' . $product->images->first()->image_url) }}" alt="{{ $product->name }}" class="product-image img-fluid">
+                      </a>
+                    @endif
 
-                        <a href="#" class="btn-icon btn-wishlist">
-                            <svg width="24" height="24" viewBox="0 0 24 24">
-                                <use xlink:href="#heart"></use>
-                            </svg>
+                    <a href="#" class="btn-icon btn-wishlist">
+                      <svg width="24" height="24" viewBox="0 0 24 24">
+                        <use xlink:href="#heart"></use>
+                      </svg>
+                    </a>
+
+                    <div class="product-content text-center">
+                      <h5 class="text-uppercase fs-5 mt-3">
+                        <a href="{{ route('main-products.show', $product->id) }}">{{ $product->name }}</a>
+                      </h5>
+                      <form action="{{ route('carts.store') }}" method="POST" class="d-inline">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <a href="javascript:void(0)" onclick="this.closest('form').submit()" class="text-decoration-none" data-after="Add to cart">
+                          <span>${{ number_format($product->price, 2) }}</span>
                         </a>
-
-                        <div class="product-content text-center">
-                            <h5 class="text-uppercase fs-5 mt-3">
-                                <a href="#">{{ $product->name }}</a>
-                            </h5>
-                            <a href="#" class="text-decoration-none" data-after="Add to cart">
-                                <span>${{ number_format($product->price, 2) }}</span>
-                            </a>
-                        </div>
+                      </form>
                     </div>
+                  </div>
                 </div>
               </div>
             @endforeach
@@ -581,6 +588,7 @@
             </div>
           @endif
         </div>
+
         <div class="swiper-pagination"></div>
       </div>
       <div class="icon-arrow icon-arrow-left"><svg width="50" height="50" viewBox="0 0 24 24">

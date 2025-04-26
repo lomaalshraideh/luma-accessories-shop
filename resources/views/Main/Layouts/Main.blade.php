@@ -247,7 +247,7 @@
           </button>
         </div>
         <div class="col-auto">
-          <a class="navbar-brand text-black" href="{{ url('landing') }}">
+          <a class="navbar-brand text-black" href="{{ url('/') }}">
             luma</a>
         </div>
         <div class="col-auto">
@@ -336,10 +336,15 @@
       </div>
       <!-- Account Links -->
       <div class="mt-4">
-        {{-- ///////////////////////////////////////// --}}
-        <h6 class="category-title" href="route{{'login'}}">My Account</h6>
-        {{-- //////////////////////////////////////////////// --}}
+        <h6 class="category-title">My Account</h6>
+        <ul class="list-unstyled">
+          <li><a href="{{ route('login') }}" class="text-decoration-none d-block py-2">Login</a></li>
+          <li><a href="{{ route('register') }}" class="text-decoration-none d-block py-2">Register</a></li>
+          @auth
+            <li><a href="{{ route('user-profiles.show', auth()->id()) }}" class="category-title">My Account</a></li>
 
+          @endauth
+        </ul>
       </div>
       <!-- Contact Info -->
       <div class="mt-4">

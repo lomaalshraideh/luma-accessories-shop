@@ -1,10 +1,22 @@
- @extends('main.layouts.main')
+@extends('main.layouts.main')
 
 @section('content')
 <div class="container py-5 mb-5">
   <div class="row">
     <div class="col-12">
       <h1 class="display-6 mb-4">Your Shopping Cart</h1>
+
+      @if(session('success'))
+          <div class="alert alert-success">
+              {{ session('success') }}
+          </div>
+      @endif
+
+      @if(session('error'))
+          <div class="alert alert-danger">
+              {{ session('error') }}
+          </div>
+      @endif
     </div>
   </div>
 
@@ -23,15 +35,22 @@
                 <th scope="col" width="15%" class="text-end">Action</th>
               </tr>
             </thead>
-            
+
             <tbody>
+              @php
+                $subtotal = 0;
+              @endphp
+
               @foreach($cartItems as $item)
+              @php
+                $subtotal += $item->product->price * $item->quantity;
+              @endphp
               <tr>
                 <td>
                   <div class="d-flex align-items-center">
                     <div class="me-3" style="width: 100px; height: 100px;">
                       @if(isset($item->product->images[0]))
-                      <img src="{{ asset('storage/' . $item->product->images[0]->image_path) }}" alt="{{ $item->product->name }}" class="img-fluid rounded-3">
+                      <img src="{{ asset('storage/' . $item->product->images[0]->image_url) }}" alt="{{ $item->product->name }}" class="img-fluid rounded-3">
                       @else
                       <div class="bg-light rounded-3 d-flex justify-content-center align-items-center" style="width: 100px; height: 100px;">
                         <span class="text-muted">No Image</span>
@@ -109,22 +128,25 @@
           <h5 class="mb-0">Order Summary</h5>
         </div>
         <div class="card-body">
+          @php
+            $shipping = 10.00; // Default shipping cost
+          @endphp
           <div class="d-flex justify-content-between mb-3">
             <span>Subtotal</span>
-            <span class="fw-semibold">${{ number_format($subtotal ?? 0, 2) }}</span>
+            <span class="fw-semibold">${{ number_format($subtotal, 2) }}</span>
           </div>
           <div class="d-flex justify-content-between mb-3">
             <span>Shipping</span>
-            <span class="fw-semibold">${{ number_format($shipping ?? 10, 2) }}</span>
+            <span class="fw-semibold">${{ number_format($shipping, 2) }}</span>
           </div>
           <hr>
           <div class="d-flex justify-content-between mb-4">
             <span class="fw-semibold">Total</span>
-            <span class="fw-bold fs-5">${{ number_format(($subtotal ?? 0) + ($shipping ?? 10), 2) }}</span>
+            <span class="fw-bold fs-5">${{ number_format($subtotal + $shipping, 2) }}</span>
           </div>
 
           <div class="d-grid">
-            <a href="{{ route('checkout') }}" class="btn btn-primary btn-lg">
+            <a href="{{ route('main.checkout') }}" class="btn btn-primary btn-lg">
               Proceed to Checkout
             </a>
           </div>
@@ -169,37 +191,172 @@
 
 @push('scripts')
 <script>
-  function incrementQuantity(button) {
-    const input = button.previousElementSibling;
-    input.value = parseInt(input.value) + 1;
-  }
+  // Make sure we have the CSRF token in the header for AJAX requests
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
 
+  // Define these functions in the global scope since they're called directly from onclick attributes
   function decrementQuantity(button) {
-    const input = button.nextElementSibling;
+    const form = button.closest('form');
+    const input = form.querySelector('input[name="quantity"]');
+
     if (parseInt(input.value) > 1) {
       input.value = parseInt(input.value) - 1;
+
+      // Visual feedback that quantity is changing
+      button.disabled = true;
+      input.classList.add('bg-light');
+
+      // Send AJAX request to update cart
+      const formData = new FormData(form);
+
+      fetch(form.action, {
+        method: 'PUT',
+        headers: {
+          'X-CSRF-TOKEN': csrfToken,
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Success feedback
+          input.classList.add('bg-success', 'bg-opacity-25');
+          setTimeout(() => {
+            window.location.reload();
+          }, 300);
+        } else {
+          // Error feedback
+          input.classList.add('bg-danger', 'bg-opacity-25');
+          input.value = parseInt(input.value) + 1; // Revert
+          setTimeout(() => {
+            input.classList.remove('bg-light', 'bg-danger', 'bg-opacity-25');
+            button.disabled = false;
+          }, 1000);
+        }
+      })
+      .catch(error => {
+        console.error('Error updating cart:', error);
+        input.classList.remove('bg-light');
+        input.value = parseInt(input.value) + 1; // Revert
+        button.disabled = false;
+      });
     }
   }
 
-  document.getElementById('update-cart-btn').addEventListener('click', function() {
-    const forms = document.querySelectorAll('.quantity-selector form');
-    forms.forEach(form => {
-      fetch(form.action, {
-        method: 'PUT',
-        body: new FormData(form),
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest',
-        }
-      }).then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            window.location.reload();
-          }
-        });
+  function incrementQuantity(button) {
+    const form = button.closest('form');
+    const input = form.querySelector('input[name="quantity"]');
+
+    // Increment the value
+    input.value = parseInt(input.value) + 1;
+
+    // Visual feedback that quantity is changing
+    button.disabled = true;
+    input.classList.add('bg-light');
+
+    // Send AJAX request to update cart
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+      method: 'PUT',
+      headers: {
+        'X-CSRF-TOKEN': csrfToken,
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Success feedback
+        input.classList.add('bg-success', 'bg-opacity-25');
+        setTimeout(() => {
+          window.location.reload();
+        }, 300);
+      } else {
+        // Error feedback
+        input.classList.add('bg-danger', 'bg-opacity-25');
+        input.value = parseInt(input.value) - 1; // Revert
+        setTimeout(() => {
+          input.classList.remove('bg-light', 'bg-danger', 'bg-opacity-25');
+          button.disabled = false;
+        }, 1000);
+      }
+    })
+    .catch(error => {
+      console.error('Error updating cart:', error);
+      input.classList.remove('bg-light');
+      input.value = parseInt(input.value) - 1; // Revert
+      button.disabled = false;
     });
+  }
+
+  // Make sure the DOM is fully loaded before attaching events
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add confirmation for delete buttons
+    document.querySelectorAll('form[action*="cart/"]').forEach(form => {
+      if (form.method === 'post' && form.innerHTML.includes('DELETE')) {
+        const deleteBtn = form.querySelector('button[type="submit"]');
+        if (deleteBtn) {
+          deleteBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('Are you sure you want to remove this item from your cart?')) {
+              form.submit();
+            }
+          });
+        }
+      }
+    });
+
+    // Update Cart button functionality
+    const updateCartBtn = document.getElementById('update-cart-btn');
+    if (updateCartBtn) {
+      updateCartBtn.addEventListener('click', function() {
+        let updateCount = 0;
+        const forms = document.querySelectorAll('.quantity-selector form');
+        const totalForms = forms.length;
+
+        if (totalForms === 0) return;
+
+        updateCartBtn.disabled = true;
+        updateCartBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Updating...';
+
+        forms.forEach(form => {
+          const formData = new FormData(form);
+
+          fetch(form.action, {
+            method: 'PUT',
+            headers: {
+              'X-CSRF-TOKEN': csrfToken,
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+            updateCount++;
+            if (updateCount === totalForms) {
+              setTimeout(() => {
+                window.location.reload();
+              }, 300);
+            }
+          })
+          .catch(error => {
+            console.error('Error updating cart:', error);
+            updateCount++;
+            if (updateCount === totalForms) {
+              setTimeout(() => {
+                window.location.reload();
+              }, 300);
+            }
+          });
+        });
+      });
+    }
   });
 </script>
 @endpush
-@endsection --}}
+@endsection
 
 

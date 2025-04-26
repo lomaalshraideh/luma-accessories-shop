@@ -3,18 +3,34 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-
+    public function __construct()
+    {
+        // Add auth middleware to relevant methods
+        $this->middleware('auth')->only(['store', 'update', 'destroy']);
+    }
 
     public function index()
     {
-        $carts = Cart::with('user')->get();
-         return view('main.carts');
+        // If user is logged in, show their cart
+        if (Auth::check()) {
+            $cart = Cart::where('user_id', Auth::id())->first();
 
+            if (!$cart) {
+                return view('main.carts', ['cartItems' => []]);
+            }
+
+            $cartItems = $cart->items()->with('product')->get();
+            return view('main.carts', compact('cartItems'));
+        }
+
+        return redirect()->route('login')->with('error', 'Please login to view your cart');
     }
 
     public function create()
@@ -24,19 +40,34 @@ class CartController extends Controller
     }
 
     public function store(Request $request)
-
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
+            'quantity' => 'integer|min:1|nullable',
         ]);
 
-        Cart::create([
-            // 'user_id' => Auth::id(), // assuming users must be logged in
-            'product_id' => $request->product_id,
-            'quantity' => 1,
-        ]);
+        // Get or create the user's cart
+        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
 
-        return back()->with('success', 'Product added to cart.');
+        // Check if this product is already in the user's cart items
+        $existingCartItem = CartItem::where('cart_id', $cart->id)
+                                  ->where('product_id', $request->product_id)
+                                  ->first();
+
+        if ($existingCartItem) {
+            // Update quantity if product already in cart
+            $existingCartItem->quantity += $request->quantity ?? 1;
+            $existingCartItem->save();
+        } else {
+            // Add new product to cart
+            CartItem::create([
+                'cart_id' => $cart->id,
+                'product_id' => $request->product_id,
+                'quantity' => $request->quantity ?? 1,
+            ]);
+        }
+
+        return back()->with('success', 'Product added to cart');
     }
 
     public function show(Cart $cart)

@@ -5,9 +5,15 @@ use App\Models\CartItem;
 use App\Models\Cart;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CartItemController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         $items = CartItem::with(['cart', 'product'])->get();
@@ -49,22 +55,44 @@ class CartItemController extends Controller
     public function update(Request $request, CartItem $cartItem)
     {
         $request->validate([
-            'cart_id'    => 'required|exists:carts,id',
-            'product_id' => 'required|exists:products,id',
-            'quantity'   => 'required|integer|min:1',
+            'quantity' => 'required|integer|min:1',
         ]);
 
-        $cartItem->update($request->all());
+        // Ensure users can only update their own cart items
+        $userCart = Cart::where('user_id', Auth::id())->first();
 
-        return redirect()->route('cart-items.index')->with('success', 'Item updated!');
+        if (!$userCart || $cartItem->cart_id !== $userCart->id) {
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+            }
+            return redirect()->back()->with('error', 'Unauthorized action.');
+        }
+
+        $cartItem->update([
+            'quantity' => $request->quantity
+        ]);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Cart updated successfully'
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Cart updated successfully');
     }
 
     public function destroy(CartItem $cartItem)
     {
+        // Ensure users can only delete their own cart items
+        $userCart = Cart::where('user_id', Auth::id())->first();
+
+        if (!$userCart || $cartItem->cart_id !== $userCart->id) {
+            return redirect()->back()->with('error', 'Unauthorized action.');
+        }
+
         $cartItem->delete();
-        return redirect()->route('cart-items.index')->with('success', 'Item removed!');
+        return redirect()->back()->with('success', 'Item removed from cart');
     }
-
-
 }
 

@@ -18,7 +18,7 @@
 
 <div class="card-body px-0 pb-2">
 
-    <form method="GET" action="{{ route('admins') }}" class="d-flex justify-content-end align-items-center gap-2 mb-3 me-3">
+    <form method="GET" action="{{ route('admins.index') }}" class="d-flex justify-content-end align-items-center gap-2 mb-3 me-3">
         <input type="text" name="name" value="{{ request('name') }}" class="form-control form-control-sm w-auto" placeholder="Search by name...">
         <button type="submit" class="btn btn-dark btn-sm">Search</button>
     </form>

@@ -34,7 +34,7 @@
                     </div>
 
                     <div class="text-end mt-4">
-                        <a href="{{ route('admins') }}" class="btn btn-outline-dark">← Back to List</a>
+                        <a href="{{ route('admins.index') }}" class="btn btn-outline-dark">← Back to List</a>
                     </div>
                 </div>
 

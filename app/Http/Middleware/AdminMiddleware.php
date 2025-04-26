@@ -12,7 +12,7 @@ class AdminMiddleware
     {
         // Check if admin session exists
         if (!$request->session()->has('admin_id')) {
-            return redirect()->route('admin.login.form')
+            return redirect()->route('login.form')
                 ->with('error', 'Please login to access the admin area');
         }
 
@@ -22,7 +22,7 @@ class AdminMiddleware
         // If admin not found, clear session and redirect
         if (!$admin) {
             $request->session()->forget(['admin_id', 'admin_name']);
-            return redirect()->route('admin.login.form')
+            return redirect()->route('login.form')
                 ->with('error', 'Admin account not found');
         }
 

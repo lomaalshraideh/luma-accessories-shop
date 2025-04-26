@@ -76,5 +76,8 @@
             @yield('content')
         </main>
     </div>
+
+    <!-- Include cart.js before closing body tag -->
+    <script src="{{ asset('js/cart.js') }}"></script>
 </body>
 </html>

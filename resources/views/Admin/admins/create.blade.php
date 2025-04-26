@@ -51,7 +51,7 @@
 
                         <div class="text-end">
                             <button type="submit" class="btn bg-gradient-dark">Create Admin</button>
-                            <a href="{{ route('admins') }}" class="btn btn-outline-dark">Cancel</a>
+                            <a href="{{ route('admins.index') }}" class="btn btn-outline-dark">Cancel</a>
                         </div>
                     </form>
 

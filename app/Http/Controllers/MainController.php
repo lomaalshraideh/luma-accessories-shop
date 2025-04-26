@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Testimonial;
+use App\Models\Cart; // Add this import
+use Illuminate\Support\Facades\Auth; // Add this import
 
 class MainController extends Controller
 {
@@ -46,6 +48,27 @@ class MainController extends Controller
         $activeCategory = $categorySlug;
 
         return view('main.product', compact('products', 'categories', 'categorySlug', 'menuCategories', 'activeCategory'));
+    }
+
+    public function checkout()
+    {
+        // Get current user's cart
+        $cart = Cart::where('user_id', Auth::id())->first();
+
+        if (!$cart) {
+            return redirect()->route('main-products.index')->with('error', 'Your cart is empty');
+        }
+
+        $cartItems = $cart->items()->with('product')->get();
+
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('main-products.index')->with('error', 'Your cart is empty');
+        }
+
+        // Calculate shipping
+        $shipping = 10.00; // Default shipping cost
+
+        return view('Main.checkout', compact('cartItems', 'shipping'));
     }
 }
 

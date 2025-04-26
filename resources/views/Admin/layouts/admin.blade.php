@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -42,25 +41,25 @@
           </a>
         </li>
         <li class="nav-item {{ Route::is('admins.index') ? 'active' : '' }}">
-          <a class="nav-link text-dark" href="{{ url('/admins') }}">
+          <a class="nav-link text-dark" href="{{ url('admin/admins') }}">
             <i class="material-symbols-rounded opacity-5">table_view</i>
             <span class="nav-link-text ms-1">Admins</span>
           </a>
         </li>
         <li class="nav-item {{ Route::is('users.index') ? 'active' : '' }}">
-          <a class="nav-link text-dark" href="{{ url('/users') }}">
+          <a class="nav-link text-dark" href="{{ url('admin/users') }}">
             <i class="material-symbols-rounded opacity-5">receipt_long</i>
             <span class="nav-link-text ms-1">Users</span>
           </a>
         </li>
         <li class="nav-item {{ Route::is('categories.index') ? 'active' : '' }}">
-          <a class="nav-link text-dark" href="{{ url('/categories') }}">
+          <a class="nav-link text-dark" href="{{ url('/admin/categories') }}">
             <i class="material-symbols-rounded opacity-5">view_in_ar</i>
             <span class="nav-link-text ms-1">Category</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link text-dark" href="{{ url('/products') }}">
+        <li class="nav-item {{ Route::is('products.index') ? 'active' : '' }}">
+          <a class="nav-link text-dark" href="{{ url('/admin/products') }}">
             <i class="material-symbols-rounded opacity-5">view_in_ar</i>
             <span class="nav-link-text ms-1">Product</span>
           </a>
@@ -68,15 +67,15 @@
 
 
 
-        <li class="nav-item">
-          <a class="nav-link text-dark" href="{{ url('/orders') }}">
+        <li class="nav-item {{ Route::is('orders.index') ? 'active' : '' }}">
+          <a class="nav-link text-dark" href="{{ url('/admin/orders') }}">
             <i class="material-symbols-rounded opacity-5">view_in_ar</i>
             <span class="nav-link-text ms-1">Order</span>
           </a>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link text-dark" href="{{ url('/testimonials') }}">
+        <li class="nav-item {{ Route::is('testimonials.index') ? 'active' : '' }}">
+          <a class="nav-link text-dark" href="{{ url('/admin/testimonials') }}">
             <i class="material-symbols-rounded opacity-5">view_in_ar</i>
             <span class="nav-link-text ms-1">Testimonials</span>
           </a>
@@ -88,7 +87,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-dark" href="{{ url('/product-reviews') }}">
+          <a class="nav-link text-dark" href="{{ url('admin/product-reviews') }}">
             <i class="material-symbols-rounded opacity-5">view_in_ar</i>
             <span class="nav-link-text ms-1">Product Review</span>
           </a>

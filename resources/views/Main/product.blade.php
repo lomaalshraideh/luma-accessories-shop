@@ -26,9 +26,13 @@
                                 <h5 class="text-uppercase fs-5 mt-3">
                                     <a href="#">{{ $product->name }}</a>
                                 </h5>
-                                <a href="#" class="text-decoration-none" data-after="Add to cart">
-                                    <span>${{ number_format($product->price, 2) }}</span>
-                                </a>
+                                <form action="{{ route('carts.store') }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                    <a href="javascript:void(0)" onclick="this.closest('form').submit()" class="text-decoration-none" data-after="Add to cart">
+                                        <span>${{ number_format($product->price, 2) }}</span>
+                                    </a>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -42,6 +46,7 @@
             <div class="col text-center">
                 {{ $products->links() }}
             </div>
+        </div>
     </div>
 </section>
 @endsection

@@ -32,7 +32,7 @@
 
                         <div class="d-flex justify-content-end gap-2">
                             <button type="submit" class="btn bg-gradient-dark mb-0">Update Admin</button>
-                            <a href="{{ route('admins') }}" class="btn btn-outline-dark mb-0">Cancel</a>
+                            <a href="{{ route('admins.index') }}" class="btn btn-outline-dark mb-0">Cancel</a>
                         </div>
                     </form>
                 </div>
