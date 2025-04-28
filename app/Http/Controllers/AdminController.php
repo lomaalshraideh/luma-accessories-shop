@@ -119,7 +119,7 @@ class AdminController
 
 public function login(Request $request)
 {
-    // dd('hello luma');
+    //  dd('hello luma');
     $request->validate([
         'email' => 'required|email',
         'password' => 'required',

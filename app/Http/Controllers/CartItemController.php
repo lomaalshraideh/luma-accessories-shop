@@ -82,17 +82,44 @@ class CartItemController extends Controller
         return redirect()->back()->with('success', 'Cart updated successfully');
     }
 
-    public function destroy(CartItem $cartItem)
+    public function destroy($id)
     {
-        // Ensure users can only delete their own cart items
-        $userCart = Cart::where('user_id', Auth::id())->first();
+        // Find the cart item
+        $cartItem = CartItem::findOrFail($id);
 
-        if (!$userCart || $cartItem->cart_id !== $userCart->id) {
-            return redirect()->back()->with('error', 'Unauthorized action.');
+        // Check if user owns this cart item
+        if (auth()->check() && $cartItem->cart->user_id === auth()->id()) {
+            // Get the cart for calculations later
+            $cart = $cartItem->cart;
+
+            // Delete the cart item
+            $cartItem->delete();
+
+            // Recalculate cart counts and totals
+            $cartCount = $cart->items->count();
+            $cartTotal = $cart->items->sum(function($item) {
+                return $item->quantity * $item->product->price;
+            });
+
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'cartCount' => $cartCount,
+                    'cartTotal' => $cartTotal
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Item removed from cart');
         }
 
-        $cartItem->delete();
-        return redirect()->back()->with('success', 'Item removed from cart');
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You do not have permission to remove this item'
+            ], 403);
+        }
+
+        return redirect()->back()->with('error', 'You do not have permission to remove this item');
     }
 }
 

@@ -4,7 +4,7 @@
 <head>
   <title>Kaira - Bootstrap 5 Fashion Store HTML CSS Template</title>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="format-detection" content="telephone=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -23,8 +23,24 @@
     href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&family=Marcellus&display=swap"
     rel="stylesheet">
   <style>
+    .navbar-brand {
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 50%;
+  margin-top: -17px;
+}
+
+    /* Make the menu button more visible */
     .navbar-toggler.always-visible {
       display: block !important;
+      margin-left: 0;
+      padding-left: 0;
     }
 
     @media (min-width: 992px) {
@@ -32,7 +48,101 @@
         display: block !important;
       }
     }
+
+    .user-avatar {
+      transition: all 0.2s ease;
+    }
+
+    .dropdown-toggle::after {
+      margin-left: 0.5em;
+    }
+
+    .dropdown-item:active {
+      background-color: #f8f9fa;
+      color: #212529;
+    }
+
+    .dropdown-item:hover {
+      background-color: #f1f3f5;
+    }
+
+    .dropdown-item-text:hover {
+      background-color: transparent;
+    }
+
+    /* Icon styles */
+    .navbar .bi {
+      color: #333;
+      transition: color 0.2s ease;
+    }
+
+    /* Change hover color to black */
+    .navbar .bi:hover {
+      color: #000; /* Changed from #0d6efd to black */
+    }
+
+    /* Adjust spacing for icon layout */
+    .list-unstyled.d-flex {
+      gap: 20px; /* Consistent spacing */
+      margin-bottom: 0 !important;
+      align-items: center; /* Ensure vertical alignment */
+    }
+
+    /* Remove any margin that might be causing misalignment */
+    .mx-2 {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    /* Make icons same size */
+    .bi-search, .bi-heart, .bi-bag, .bi-person {
+      font-size: 1.25rem !important; /* Consistent size */
+      line-height: 1;
+      display: flex; /* Use flexbox for alignment */
+    }
+
+    /* Position the badge consistently */
+    .position-relative .badge {
+      top: -5px !important;
+      right: -8px !important;
+      transform: none !important;
+      margin: 0 !important;
+    }
+
+    /* Fix the user avatar alignment */
+    .user-avatar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    /* Fix dropdown toggle extra spacing */
+    .dropdown-toggle::after {
+      display: none; /* Remove the dropdown arrow to improve alignment */
+    }
+
+    /* Force the row of icons to stay aligned */
+    .d-flex.justify-content-end.align-items-center {
+      height: 45px; /* Update to match the new avatar height */
+    }
+
+    /* Bigger icon for guest users */
+    .btn-icon .bi-person {
+      font-size: 1.5rem !important;
+    }
+
+    /* Better responsive behavior */
+    @media (max-width: 576px) {
+      .navbar-brand {
+        font-size: 1.5rem;
+      }
+    }
   </style>
+  <!-- Make sure this is in your layout head section -->
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <!-- Add this to the head section of your Main.blade.php -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 
 <body class="homepage">
@@ -49,10 +159,6 @@
       <symbol xmlns="http://www.w3.org/2000/svg" id="twitter" viewBox="0 0 15 15">
         <path fill="currentColor"
           d="m14.478 1.5l.5-.033a.5.5 0 0 0-.871-.301l.371.334Zm-.498 2.959a.5.5 0 1 0-1 0h1Zm-6.49.082h-.5h.5Zm0 .959h.5h-.5Zm-6.99 7V12a.5.5 0 0 0-.278.916L.5 12.5Zm.998-11l.469-.175a.5.5 0 0 0-.916-.048l.447.223Zm3.994 9l.354.353a.5.5 0 0 0-.195-.827l-.159.474Zm7.224-8.027l-.37.336l.18.199l.265-.04l-.075-.495Zm1.264-.94c.051.778.003 1.25-.123 1.606c-.122.345-.336.629-.723 1l.692.722c.438-.42.776-.832.974-1.388c.193-.546.232-1.178.177-2.006l-.998.066Zm0 3.654V4.46h-1v.728h1Zm-6.99-.646V5.5h1v-.959h-1Zm0 .959V6h1v-.5h-1ZM10.525 1a3.539 3.539 0 0 0-3.537 3.541h1A2.539 2.539 0 0 1 10.526 2V1Zm2.454 4.187C12.98 9.503 9.487 13 5.18 13v1c4.86 0 8.8-3.946 8.8-8.813h-1ZM1.03 1.675C1.574 3.127 3.614 6 7.49 6V5C4.174 5 2.421 2.54 1.966 1.325l-.937.35Zm.021-.398C.004 3.373-.157 5.407.604 7.139c.759 1.727 2.392 3.055 4.73 3.835l.317-.948c-2.155-.72-3.518-1.892-4.132-3.29c-.612-1.393-.523-3.11.427-5.013l-.895-.446Zm4.087 8.87C4.536 10.75 2.726 12 .5 12v1c2.566 0 4.617-1.416 5.346-2.147l-.708-.706Zm7.949-8.009A3.445 3.445 0 0 0 10.526 1v1c.721 0 1.37.311 1.82.809l.74-.671Zm-.296.83a3.513 3.513 0 0 0 2.06-1.134l-.744-.668a2.514 2.514 0 0 1-1.466.813l.15.989ZM.222 12.916C1.863 14.01 3.583 14 5.18 14v-1c-1.63 0-3.048-.011-4.402-.916l-.556.832Z" />
-      </symbol>
-      <symbol xmlns="http://www.w3.org/2000/svg" id="pinterest" viewBox="0 0 15 15">
-        <path fill="none" stroke="currentColor"
-          d="m4.5 13.5l3-7m-3.236 3a2.989 2.989 0 0 1-.764-2V7A3.5 3.5 0 0 1 7 3.5h1A3.5 3.5 0 0 1 11.5 7v.5a3 3 0 0 1-3 3a2.081 2.081 0 0 1-1.974-1.423L6.5 9m1 5.5a7 7 0 1 1 0-14a7 7 0 0 1 0 14Z" />
       </symbol>
       <symbol xmlns="http://www.w3.org/2000/svg" id="youtube" viewBox="0 0 15 15">
         <path fill="currentColor"
@@ -191,118 +297,185 @@
     </div>
   </div>
   {{-- هاي هون cart الي ب nav  --}}
-  <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasCart"
-    aria-labelledby="My Cart">
+  <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasCart" aria-labelledby="My Cart">
     <div class="offcanvas-header justify-content-center">
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
       <div class="order-md-last">
         <h4 class="d-flex justify-content-between align-items-center mb-3">
-          <span class="text-primary">Your cart</span>
-          <span class="badge bg-primary rounded-pill">3</span>
+          <span class="text-primary">Your Cart</span>
+          <span class="badge bg-primary rounded-pill cart-badge">{{ $cartCount }}</span>
         </h4>
         <ul class="list-group mb-3">
-          <li class="list-group-item d-flex justify-content-between lh-sm">
-            <div>
-              <h6 class="my-0">Growers cider</h6>
-              <small class="text-body-secondary">Brief description</small>
+          @forelse($offcanvasCartItems as $item)
+          <li class="list-group-item d-flex justify-content-between lh-sm cart-item" data-item-id="{{ $item->id }}">
+            <div class="d-flex align-items-center">
+              @if($item->product->images->first())
+              <img src="{{ asset('storage/' . $item->product->images->first()->image_url) }}"
+                   alt="{{ $item->product->name }}" width="40" class="img-thumbnail me-2">
+              @endif
+              <div>
+                <h6 class="my-0">{{ $item->product->name }}</h6>
+                <small class="text-muted">{{ $item->quantity }} x ${{ number_format($item->product->price, 2) }}</small>
+              </div>
             </div>
-            <span class="text-body-secondary">$12</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-sm">
-            <div>
-              <h6 class="my-0">Fresh grapes</h6>
-              <small class="text-body-secondary">Brief description</small>
+            <div class="d-flex flex-column align-items-end">
+              <span class="text-body-secondary">${{ number_format($item->quantity * $item->product->price, 2) }}</span>
+              <button type="button" class="btn btn-sm text-danger remove-cart-item p-0 mt-2"
+                      data-item-id="{{ $item->id }}">
+                Remove
+              </button>
             </div>
-            <span class="text-body-secondary">$8</span>
           </li>
-          <li class="list-group-item d-flex justify-content-between lh-sm">
-            <div>
-              <h6 class="my-0">Heinz tomato ketchup</h6>
-              <small class="text-body-secondary">Brief description</small>
-            </div>
-            <span class="text-body-secondary">$5</span>
+          @empty
+          <li class="list-group-item text-center py-4">
+            Your cart is empty
           </li>
+          @endforelse
+
+          @if($cartCount > 0)
           <li class="list-group-item d-flex justify-content-between">
             <span>Total (USD)</span>
-            <strong>$20</strong>
+            <strong>${{ number_format($cartTotal, 2) }}</strong>
           </li>
+          @endif
         </ul>
 
-
-        <button class="w-100 btn btn-primary btn-lg" onclick="window.location.href='{{ route('carts.index') }}'" type="button">View cart</button>
-
+        @if($cartCount > 0)
+        <button class="w-100 btn btn-primary btn-lg"
+          onclick="window.location.href='{{ route('carts.index') }}'" type="button">View Cart</button>
+        @else
+        <button class="w-100 btn btn-outline-primary btn-lg"
+          onclick="window.location.href='{{ route('main-products.index') }}'" type="button">Shop Now</button>
+        @endif
       </div>
     </div>
   </div>
-  <nav class="navbar navbar-expand-lg bg-light text-uppercase fs-6 p-3 border-bottom align-items-center">
-    <div class="container-fluid">
-      <div class="row justify-content-between align-items-center w-100">
-        <div class="col-auto">
-          <!-- Always visible toggle button -->
-          <button class="navbar-toggler always-visible" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-        </div>
-        <div class="col-auto">
-          <a class="navbar-brand text-black" href="{{ url('/') }}">
-            luma</a>
-        </div>
-        <div class="col-auto">
-          {{-- <a class="navbar-brand text-black" href="{{ url('landing') }}"> --}}
-            {{-- luma</a> --}}
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" >
-                @csrf
-                <button type="submit" class="btn btn-link text-decoration-none text-black">Logout</button>
-            </form>
-        </div>
-        {{-- Wishlist and Cart toggles --}}
-        <div class="col-3 col-lg-auto">
-          <ul class="list-unstyled d-flex m-0">
-            <li class="d-none d-lg-block">
-              <a href="#" class="text-uppercase mx-3" data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasWishlist" aria-controls="offcanvasWishlist">
-                Wishlist <span class="wishlist-count">(0)</span>
+  <!-- Replace your current navbar with this updated version -->
+<nav class="navbar navbar-expand-lg bg-light text-uppercase fs-6 p-3 border-bottom align-items-center">
+  <div class="container-fluid">
+    <div class="row justify-content-between align-items-center w-100">
+      <!-- Left side - Menu toggle button -->
+      <div class="col-4 text-start">
+        <!-- Menu toggle button -->
+        <button class="navbar-toggler always-visible" type="button" data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+
+      <!-- Center - Logo -->
+      <div class="col-4 text-center">
+        <a class="navbar-brand text-black" href="{{ url('/') }}">luma</a>
+      </div>
+
+      <!-- Right side - Icons and Profile -->
+      <div class="col-4 text-end">
+        <!-- Icons Section -->
+        <div class="d-flex justify-content-end align-items-center">
+          <ul class="list-unstyled d-flex m-0 align-items-center">
+            <!-- Search Icon -->
+            <li>
+              <a href="#search" class="search-button position-relative">
+                <i class="bi bi-search"></i>
               </a>
             </li>
-            <li class="d-none d-lg-block">
-              <a href="#" class="text-uppercase mx-3" data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
-                Cart <span class="cart-count">(0)</span>
+
+            <!-- Wishlist Icon -->
+            <li>
+              <a href="{{ Auth::check() ? '#' : route('login') }}"
+                 class="position-relative {{ Auth::check() ? 'wishlist-icon' : 'login-required' }}"
+                 @if(Auth::check())
+                   data-bs-toggle="offcanvas"
+                   data-bs-target="#offcanvasWishlist"
+                   aria-controls="offcanvasWishlist"
+                 @else
+                   data-bs-toggle="tooltip"
+                   data-bs-title="Login to use wishlist"
+                 @endif>
+              <i class="bi bi-heart {{ Auth::check() && $wishlistCount > 0 ? 'text-danger' : '' }}"></i>
+              @if(Auth::check() && $wishlistCount > 0)
+                <span class="position-absolute badge rounded-pill bg-danger" style="font-size: 0.65rem">
+                  {{ $wishlistCount }}
+                </span>
+              @endif
               </a>
             </li>
-            <li class="d-lg-none">
-              <a href="#" class="mx-2" data-bs-toggle="offcanvas" data-bs-target="#offcanvasWishlist"
-                aria-controls="offcanvasWishlist">
-                <svg width="24" height="24" viewBox="0 0 24 24">
-                  <use xlink:href="#heart"></use>
-                </svg>
+
+            <!-- Cart Icon -->
+            <li>
+              <a href="{{ Auth::check() ? '#' : route('login') }}"
+                 class="position-relative {{ Auth::check() ? 'cart-icon' : 'login-required' }}"
+                 @if(Auth::check())
+                   data-bs-toggle="offcanvas"
+                   data-bs-target="#offcanvasCart"
+                   aria-controls="offcanvasCart"
+                 @else
+                   data-bs-toggle="tooltip"
+                   data-bs-title="Login to view cart"
+                 @endif>
+              <i class="bi bi-bag {{ Auth::check() && $cartCount > 0 ? 'text-primary' : '' }}"></i>
+              @if(Auth::check() && $cartCount > 0)
+                <span class="position-absolute badge rounded-pill bg-danger" style="font-size: 0.65rem">
+                  {{ $cartCount }}
+                </span>
+              @endif
               </a>
             </li>
-            <li class="d-lg-none">
-              <a href="#" class="mx-2" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart"
-                aria-controls="offcanvasCart">
-                <svg width="24" height="24" viewBox="0 0 24 24">
-                  <use xlink:href="#cart"></use>
-                </svg>
-              </a>
-            </li>
-            <li class="search-box mx-2">
-              <a href="#search" class="search-button">
-                <svg width="24" height="24" viewBox="0 0 24 24">
-                  <use xlink:href="#search"></use>
-                </svg>
-              </a>
+
+            <!-- User Profile -->
+            <li>
+              @guest
+                <a href="{{ route('login') }}" class="btn-icon login-required" data-bs-toggle="tooltip" data-bs-title="Login">
+                  <i class="bi bi-person" style="font-size: 1.5rem;"></i>
+                </a>
+              @else
+                <div class="dropdown">
+                  <a class="dropdown-toggle text-decoration-none" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="user-avatar rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; font-weight: bold; font-size: 1.4rem;">
+                      {{ substr(Auth::user()->name, 0, 1) }}
+                    </div>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                    <li class="dropdown-item-text">
+                      <div class="d-flex flex-column px-2 py-1">
+                        <span class="fw-bold">{{ Auth::user()->name }}</span>
+                        <small class="text-muted">{{ Auth::user()->email }}</small>
+                      </div>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="{{ route('main.user_profile') }}">
+                      <i class="bi bi-person me-2"></i> My Profile
+                    </a></li>
+                    <li><a class="dropdown-item" href="{{ route('wishlists.index') }}">
+                      <i class="bi bi-heart me-2"></i> My Wishlist
+                      @if($wishlistCount > 0)
+                      <span class="badge bg-primary rounded-pill">{{ $wishlistCount }}</span>
+                      @endif
+                    </a></li>
+                    <li><a class="dropdown-item" href="{{ route('orders.index') }}">
+                      <i class="bi bi-bag me-2"></i> My Orders
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                      <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="dropdown-item">
+                          <i class="bi bi-box-arrow-right me-2"></i> Logout
+                        </button>
+                      </form>
+                    </li>
+                  </ul>
+                </div>
+              @endguest
             </li>
           </ul>
         </div>
-
       </div>
-
     </div>
-  </nav>
+  </div>
+</nav>
 
   <!-- Enhanced Offcanvas Menu -->
   <div class="offcanvas offcanvas-start offcanvas-menu" tabindex="-1" id="offcanvasNavbar"
@@ -341,7 +514,7 @@
           <li><a href="{{ route('login') }}" class="text-decoration-none d-block py-2">Login</a></li>
           <li><a href="{{ route('register') }}" class="text-decoration-none d-block py-2">Register</a></li>
           @auth
-            <li><a href="{{ route('user-profiles.show', auth()->id()) }}" class="category-title">My Account</a></li>
+            <li><a href="{{ route('main.user_profile') }}" class="category-title">My Account</a></li>
 
           @endauth
         </ul>
@@ -402,26 +575,43 @@
       <div class="order-md-last">
         <h4 class="d-flex justify-content-between align-items-center mb-3">
           <span class="text-primary">Your Wishlist</span>
-          <span class="badge bg-primary rounded-pill">2</span>
+          <span class="badge bg-primary rounded-pill">{{ $wishlistCount }}</span>
         </h4>
         <ul class="list-group mb-3">
-          <li class="list-group-item d-flex justify-content-between lh-sm">
-            <div>
-              <h6 class="my-0">Silver Ring</h6>
-              <small class="text-body-secondary">Elegant and shiny</small>
+          @forelse($offcanvasWishlistItems as $item)
+          <li class="list-group-item d-flex justify-content-between lh-sm wishlist-item" data-item-id="{{ $item->id }}">
+            <div class="d-flex align-items-center">
+              @if($item->product->images->first())
+              <img src="{{ asset('storage/' . $item->product->images->first()->image_url) }}"
+                   alt="{{ $item->product->name }}" width="40" class="img-thumbnail me-2">
+              @endif
+              <div>
+                <h6 class="my-0">{{ $item->product->name }}</h6>
+                <small class="text-body-secondary">{{ Str::limit($item->product->description, 40) }}</small>
+              </div>
             </div>
-            <span class="text-body-secondary">$30</span>
-          </li>
-          <li class="list-group-item d-flex justify-content-between lh-sm">
-            <div>
-              <h6 class="my-0">Gold Necklace</h6>
-              <small class="text-body-secondary">Classic style</small>
+            <div class="d-flex flex-column align-items-end">
+              <span class="text-body-secondary">${{ number_format($item->product->price, 2) }}</span>
+              <button type="button" class="btn btn-sm text-danger remove-wishlist-item p-0 mt-2"
+                      data-item-id="{{ $item->id }}">
+                Remove
+              </button>
             </div>
-            <span class="text-body-secondary">$120</span>
           </li>
+          @empty
+          <li class="list-group-item text-center py-4">
+            Your wishlist is empty
+          </li>
+          @endforelse
         </ul>
+
+        @if($wishlistCount > 0)
         <button class="w-100 btn btn-primary btn-lg"
           onclick="window.location.href='{{ route('wishlists.index') }}'" type="button">View Wishlist</button>
+        @else
+        <button class="w-100 btn btn-outline-primary btn-lg"
+          onclick="window.location.href='{{ route('main-products.index') }}'" type="button">Shop Now</button>
+        @endif
       </div>
     </div>
   </div>
@@ -507,17 +697,7 @@
               <li class="menu-item">
                 <a href="#" class="item-anchor">Find us easy</a>
               </li>
-              <li class="menu-item">
-                <a href="index.html" class="item-anchor">Faqs</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-          <div class="footer-menu footer-menu-004 border-animation-left">
-            <h5 class="widget-title text-uppercase mb-4">Contact Us</h5>
-            <p>Do you have any questions or suggestions? <a href="mailto:contact@yourcompany.com"
-                class="item-anchor">contact@yourcompany.com</a></p>
+              <li class
             <p>Do you need support? Give us a call. <a href="tel:+43 720 11 52 78" class="item-anchor">+43 720 11 52
                 78</a>
             </p>
@@ -558,7 +738,165 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
   <script src="js/script.min.js"></script>
+  {{-- @stack('scripts') --}}
 
+  <!-- Add this script before the closing </body> tag -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize tooltips
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+  // Handle removing items from cart in offcanvas
+  const removeCartButtons = document.querySelectorAll('.remove-cart-item');
+
+  removeCartButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const itemId = this.getAttribute('data-item-id');
+      const listItem = document.querySelector(`.cart-item[data-item-id="${itemId}"]`);
+
+      // Send delete request via fetch
+      fetch(`/carts/items/${itemId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Remove the item from DOM with animation
+          listItem.style.transition = 'all 0.3s ease';
+          listItem.style.opacity = '0';
+          listItem.style.maxHeight = '0';
+
+          setTimeout(() => {
+            listItem.remove();
+
+            // Update cart count in navbar
+            const cartCounts = document.querySelectorAll('.badge');
+            cartCounts.forEach(badge => {
+              if (badge.classList.contains('cart-badge')) {
+                badge.textContent = data.cartCount;
+              }
+            });
+
+            // Update total if cart has items
+            if (data.cartCount > 0) {
+              const totalElement = document.querySelector('#offcanvasCart .list-group-item:last-child strong');
+              if (totalElement) {
+                totalElement.textContent = `$${data.cartTotal.toFixed(2)}`;
+              }
+            } else {
+              // If cart is empty, replace contents
+              const cartBody = document.querySelector('#offcanvasCart .offcanvas-body');
+              cartBody.innerHTML = `
+                <div class="order-md-last">
+                  <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-primary">Your Cart</span>
+                    <span class="badge bg-primary rounded-pill cart-badge">0</span>
+                  </h4>
+                  <ul class="list-group mb-3">
+                    <li class="list-group-item text-center py-4">
+                      Your cart is empty
+                    </li>
+                  </ul>
+                  <button class="w-100 btn btn-outline-primary btn-lg"
+                    onclick="window.location.href='${window.location.origin}/products'" type="button">Shop Now</button>
+                </div>
+              `;
+            }
+          }, 300);
+        } else {
+          alert('There was a problem removing the item from your cart.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('There was a problem removing the item from your cart.');
+      });
+    });
+  });
+
+  // Handle removing items from wishlist
+  const removeWishlistButtons = document.querySelectorAll('.remove-wishlist-item');
+
+  removeWishlistButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const itemId = this.getAttribute('data-item-id');
+      const listItem = document.querySelector(`.wishlist-item[data-item-id="${itemId}"]`);
+
+      // Send delete request via fetch
+      fetch(`/wishlists/items/${itemId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Remove the item from DOM with animation
+          listItem.style.transition = 'all 0.3s ease';
+          listItem.style.opacity = '0';
+          listItem.style.maxHeight = '0';
+
+          setTimeout(() => {
+            listItem.remove();
+
+            // Update wishlist count in navbar and offcanvas
+            const wishlistCountBadges = document.querySelectorAll('.badge');
+            wishlistCountBadges.forEach(badge => {
+              if (badge.parentElement.textContent.includes('Your Wishlist')) {
+                badge.textContent = data.wishlistCount;
+              }
+            });
+
+            // Update the icon badge count
+            const wishlistIconBadge = document.querySelector('.wishlist-icon .badge');
+            if (wishlistIconBadge) {
+              if (data.wishlistCount > 0) {
+                wishlistIconBadge.textContent = data.wishlistCount;
+              } else {
+                wishlistIconBadge.style.display = 'none';
+              }
+            }
+
+            // If wishlist is empty, replace contents
+            if (data.wishlistCount === 0) {
+              const wishlistBody = document.querySelector('#offcanvasWishlist .list-group');
+              wishlistBody.innerHTML = `
+                <li class="list-group-item text-center py-4">
+                  Your wishlist is empty
+                </li>
+              `;
+
+              // Replace view button with shop now
+              const viewButton = document.querySelector('#offcanvasWishlist .btn-primary');
+              if (viewButton) {
+                viewButton.outerHTML = `
+                  <button class="w-100 btn btn-outline-primary btn-lg"
+                    onclick="window.location.href='${window.location.origin}/products'" type="button">Shop Now</button>
+                `;
+              }
+            }
+          }, 300);
+        } else {
+          alert('There was a problem removing the item from your wishlist.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('There was a problem removing the item from your wishlist.');
+      });
+    });
+  });
+});
+</script>
 
 </body>
 

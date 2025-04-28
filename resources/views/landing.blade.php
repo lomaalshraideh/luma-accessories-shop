@@ -212,11 +212,17 @@
                       </a>
                     @endif
 
-                    <a href="#" class="btn-icon btn-wishlist">
-                      <svg width="24" height="24" viewBox="0 0 24 24">
-                        <use xlink:href="#heart"></use>
-                      </svg>
-                    </a>
+                    <!-- Replace the static wishlist link with this form -->
+                    <form action="{{ route('wishlists.add-product') }}" method="POST" class="wishlist-form d-inline">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <button type="submit" class="btn-icon btn-wishlist bg-transparent border-0
+                            {{ Auth::check() && Auth::user()->wishlist && Auth::user()->wishlist->items->where('product_id', $product->id)->count() > 0 ? 'text-danger' : '' }}">
+                            <svg width="24" height="24" viewBox="0 0 24 24">
+                                <use xlink:href="#heart"></use>
+                            </svg>
+                        </button>
+                    </form>
 
                     <div class="product-content text-center">
                       <h5 class="text-uppercase fs-5 mt-3">
@@ -323,7 +329,7 @@
         <div class="collection-item d-flex flex-wrap my-5">
           <div class="col-md-6 column-container">
             <div class="image-holder">
-              <img src="images/single-image-2.jpg" alt="collection" class="product-image img-fluid">
+              <img src="/public/assets/images/landing page.jpg" alt="collection" class="product-image img-fluid">
             </div>
           </div>
           <div class="col-md-6 column-container bg-white">
@@ -749,3 +755,60 @@
   </section>
 
   @endsection
+
+@push('scripts')
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Handle wishlist functionality
+    const wishlistForms = document.querySelectorAll('.wishlist-form');
+
+    wishlistForms.forEach(form => {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Update the heart button appearance
+            const heartButton = form.querySelector('.btn-wishlist');
+            if (data.added) {
+              heartButton.classList.add('text-danger');
+
+              // Optional: Show a small notification
+              const notification = document.createElement('div');
+              notification.className = 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success';
+              notification.innerHTML = 'Added';
+              notification.style.fontSize = '0.7rem';
+              form.appendChild(notification);
+
+              setTimeout(() => {
+                notification.remove();
+              }, 2000);
+            }
+
+            // Update wishlist count in navbar if it exists
+            const wishlistCount = document.querySelector('.wishlist-count');
+            if (wishlistCount) {
+              wishlistCount.textContent = data.wishlistCount;
+            }
+          } else if (data.redirect) {
+            // Redirect to login if needed
+            window.location.href = data.redirect;
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+      });
+    });
+  });
+</script>
+@endpush

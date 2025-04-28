@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('testimonials', function (Blueprint $table) {
-            $table->id();
-            // Your columns here
-            $table->timestamps();
-        });
+        // Check if the table already exists before trying to create it
+        if (!Schema::hasTable('testimonials')) {
+            Schema::create('testimonials', function (Blueprint $table) {
+                $table->id();
+                $table->timestamps();
+                // Add other columns as needed
+            });
+        }
     }
 
     /**

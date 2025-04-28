@@ -2,44 +2,28 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Disable foreign key checks
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Truncate tables (clear all data)
+        User::truncate();
+        // Add other tables you want to clear here
 
+        // Re-enable foreign key checks
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
+        // Run all your seeders
         $this->call([
-            // UserSeeder::class,
-            CategorySeeder::class,
-            ProductSeeder::class,
-            ProductImageSeeder::class,
-            ProductReviewSeeder::class,
-            WishlistSeeder::class,
-            WishlistItemSeeder::class,
-            CartSeeder::class,
-            CartItemSeeder::class,
-            OrderSeeder::class,
-            OrderItemSeeder::class,
-            PaymentSeeder::class,
-            AddressSeeder::class,
-            DiscountCouponSeeder::class,
-            TestimonialSeeder::class,
-            UserProfileSeeder::class,
-            AdminSeeder::class,
+            UserSeeder::class,
+            // Other seeders...
         ]);
     }
-
 }

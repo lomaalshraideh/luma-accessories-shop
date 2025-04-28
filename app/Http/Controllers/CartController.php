@@ -51,8 +51,8 @@ class CartController extends Controller
 
         // Check if this product is already in the user's cart items
         $existingCartItem = CartItem::where('cart_id', $cart->id)
-                                  ->where('product_id', $request->product_id)
-                                  ->first();
+                             ->where('product_id', $request->product_id)
+                             ->first();
 
         if ($existingCartItem) {
             // Update quantity if product already in cart
@@ -67,7 +67,18 @@ class CartController extends Controller
             ]);
         }
 
-        return back()->with('success', 'Product added to cart');
+        // Get updated cart count
+        $cartCount = $cart->items()->sum('quantity');
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Product added to cart',
+                'cartCount' => $cartCount
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Product added to cart');
     }
 
     public function show(Cart $cart)

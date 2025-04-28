@@ -97,4 +97,26 @@ Auth::routes();
 // Route::post('/cart/add', [App\Http\Controllers\CartController::class, 'addToCart'])->name('cart.add');
 // Route::post('/cart/add-redirect', [App\Http\Controllers\CartController::class, 'addToCartAndRedirect'])->name('cart.add.redirect');
 
+// Add or update wishlist item routes if they don't exist
+Route::delete('/wishlists/items/{id}', [WishlistItemController::class, 'destroy'])->name('wishlists.items.destroy');
+
+// Make sure this route exists for clearing the entire wishlist
+Route::delete('/wishlists/clear', [WishlistController::class, 'clearAll'])->name('wishlists.clear');
+
+// Add this route for adding products to wishlist
+Route::post('/wishlists/add-product', [WishlistController::class, 'addProduct'])->name('wishlists.add-product');
+
+// Add this if it's not already there
+
+
+// And make sure this route exists
+Route::post('/addresses', [AddressController::class, 'store'])->name('addresses.store');
+
+// Add or update these routes for user profile
+Route::get('/profile', [\App\Http\Controllers\UserProfileController::class, 'show'])->middleware('auth')->name('main.user_profile');
+Route::put('/profile/update', [\App\Http\Controllers\UserProfileController::class, 'update'])->middleware('auth')->name('main.user_profile.update');
+
+// Add or update cart item routes
+Route::delete('/carts/items/{id}', [CartItemController::class, 'destroy'])->name('cart-items.destroy');
+
 

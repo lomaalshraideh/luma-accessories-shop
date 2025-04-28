@@ -67,9 +67,39 @@ class WishlistItemController extends Controller
 
 
 
-    public function destroy(WishlistItem $wishlistItem)
+    public function destroy($id)
     {
-        $wishlistItem->delete();
-        return redirect()->route('wishlist-items.index')->with('success', 'Item deleted!');
+        // Find the wishlist item
+        $wishlistItem = WishlistItem::findOrFail($id);
+
+        // Check if user owns this wishlist item
+        if (auth()->check() && $wishlistItem->wishlist->user_id === auth()->id()) {
+            // Get the wishlist for calculations later
+            $wishlist = $wishlistItem->wishlist;
+
+            // Delete the wishlist item
+            $wishlistItem->delete();
+
+            // Count remaining items
+            $wishlistCount = $wishlist->items->count();
+
+            if (request()->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'wishlistCount' => $wishlistCount
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Item removed from wishlist');
+        }
+
+        if (request()->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You do not have permission to remove this item'
+            ], 403);
+        }
+
+        return redirect()->back()->with('error', 'You do not have permission to remove this item');
     }
 }
