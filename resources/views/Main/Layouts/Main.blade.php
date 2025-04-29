@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>Kaira - Bootstrap 5 Fashion Store HTML CSS Template</title>
+  <title>LUMA </title>
   <meta charset="utf-8">
   <meta http
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -522,7 +522,7 @@
       <!-- Contact Info -->
       <div class="mt-4">
         <h6 class="category-title">Contact Us</h6>
-        <p class="mb-1"><small>Email: info@example.com</small></p>
+        <p class="mb-1"><small>Email: Luma@example.com</small></p>
         <p><small>Phone: +1 234 567 890</small></p>
       </div>
     </div>

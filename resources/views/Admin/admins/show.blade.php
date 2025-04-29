@@ -23,14 +23,11 @@
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-md-6">
-                            <strong>Created At:</strong>
-                            <p>{{ $admin->created_at->format('d M Y - h:i A') }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <strong>Last Updated:</strong>
+
+                        {{-- <div class="col-md-6">
+                            <strong>Role</strong>
                             <p>{{ $admin->updated_at->format('d M Y - h:i A') }}</p>
-                        </div>
+                        </div> --}}
                     </div>
 
                     <div class="text-end mt-4">

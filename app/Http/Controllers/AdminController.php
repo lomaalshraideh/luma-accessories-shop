@@ -53,7 +53,7 @@ class AdminController
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('admins')->with('success', 'Admin created successfully.');
+        return redirect()->route('admins.index')->with('success', 'Admin created successfully.');
     }
 
 
@@ -82,23 +82,26 @@ class AdminController
      */
     public function update(Request $request, Admin $admin)
     {
-        $request->validate([
+        // Validate the request
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:admins,email,' . $admin->id,
-            'password' => 'nullable|min:6',
+            'email' => 'required|email|max:255|unique:admins,email,' . $admin->id,
+            'password' => 'nullable|string|min:8',
         ]);
 
-        $admin->name = $request->name;
-        $admin->email = $request->email;
+        // Update admin info
+        $admin->name = $validated['name'];
+        $admin->email = $validated['email'];
 
         // Only update password if provided
-        if ($request->filled('password')) {
-            $admin->password = bcrypt($request->password);
+        if (!empty($validated['password'])) {
+            $admin->password = Hash::make($validated['password']);
         }
 
         $admin->save();
 
-        return redirect()->route('admins')->with('success', 'Admin updated successfully!');
+        return redirect()->route('admins.index')
+            ->with('success', 'Admin updated successfully!');
     }
 
 
@@ -107,9 +110,19 @@ class AdminController
      */
     public function destroy(Admin $admin)
     {
+        // Check if admin user is logged in using your session approach
+        $currentAdminId = session('admin_id');
+
+        // If there's no authenticated admin or attempting to delete your own account
+        if (!$currentAdminId || $currentAdminId === $admin->id) {
+            return redirect()->route('admins.index')
+                ->with('error', $currentAdminId ? 'You cannot delete your own account.' : 'Authentication required.');
+        }
+
         $admin->delete();
 
-        return redirect()->route('admins')->with('success', 'Admin deleted successfully.');
+        return redirect()->route('admins.index')
+            ->with('success', 'Admin deleted successfully!');
     }
     public function showLoginForm()
 {

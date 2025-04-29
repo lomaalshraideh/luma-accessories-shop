@@ -9,12 +9,16 @@ class Order extends Model
 {
     /** @use HasFactory<\Database\Factories\OrderFactory> */
     use HasFactory;
+
     protected $fillable = [
         'user_id',
         'total',
         'status',
-        'address_id',
+        'address',
         'payment_id',
+        'method',
+        'notes',
+        'order_number'
     ];
 
     public function user()
@@ -31,8 +35,14 @@ class Order extends Model
     {
         return $this->belongsTo(Payment::class);
     }
+
     public function Items()
     {
         return $this->hasMany(\App\Models\OrderItem::class);
+    }
+
+    public function getFormattedAddressAttribute()
+    {
+        return nl2br(e($this->address));
     }
 }

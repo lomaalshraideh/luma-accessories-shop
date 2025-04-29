@@ -34,8 +34,9 @@
                     <!-- Address -->
                     <h6>Shipping Address</h6>
                     @if ($order->address)
-                        <p><strong>City:</strong> {{ $order->address->city }}</p>
-                        <p><strong>Street:</strong> {{ $order->address->street }}</p>
+                        {{-- <p><strong>City:</strong> {{ $order->address->city }}</p>
+                        <p><strong>Street:</strong> {{ $order->address->street }}</p> --}}
+                        {!! $order->formatted_address !!}
                     @else
                         <p class="text-muted">No address provided.</p>
                     @endif
@@ -52,12 +53,12 @@
                                     <th>Image</th>
                                     <th class="text-center">Price</th>
                                     <th class="text-center">Quantity</th>
-                                    <th class="text-center">Subtotal</th>
+                                    <th class="text-center">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($order->Items as $item)
-                                    <tr>
+                                    <tr class="order-item">
                                         <td>{{ $item->product->name ?? 'Product Deleted' }}</td>
                                         <td>
                                             @if($item->product && $item->product->images->first())
@@ -86,7 +87,7 @@
                     @endif
 
                     <!-- Total + Back -->
-                    <h5 class="text-end mt-4">Total: ${{ number_format($order->total, 2) }}</h5>
+                    <h5 class="text-end mt-4">Total: $<span id="display-total">{{ number_format($order->total ?? 0, 2) }}</span></h5>
 
                     <div class="text-end mt-4">
                         <a href="{{ route('orders.index') }}" class="btn btn-secondary">
@@ -99,5 +100,25 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Example JavaScript to update the total amount on the form
+    function updateTotal() {
+        let total = 0;
+        document.querySelectorAll('.order-item').forEach(item => {
+            const price = parseFloat(item.querySelector('[name="prices[]"]').value || 0);
+            const quantity = parseInt(item.querySelector('[name="quantities[]"]').value || 0);
+            total += price * quantity;
+        });
+
+        document.getElementById('total_amount').value = total.toFixed(2);
+        document.getElementById('display-total').textContent = `$${total.toFixed(2)}`;
+    }
+
+    // Attach event listeners to update total when products or quantities change
+    document.querySelectorAll('[name="products[]"], [name="quantities[]"]').forEach(el => {
+        el.addEventListener('change', updateTotal);
+    });
+</script>
 @endsection
 

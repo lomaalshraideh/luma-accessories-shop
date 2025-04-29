@@ -30,13 +30,38 @@ class OrderController extends Controller
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'address_id' => 'required|exists:addresses,id',
-            'total' => 'required|numeric|min:0',
+            'address' => 'required|string|max:255', // Changed from address_id
+            'products' => 'required|array',
+            'quantities' => 'required|array',
             'status' => 'required|in:pending,shipped,delivered,cancelled',
             'notes' => 'nullable|string',
+            'total' => 'required|numeric',
         ]);
 
-        Order::create($request->all());
+        // Create the order
+        $order = Order::create([
+            'user_id' => $request->user_id,
+            'address' => $request->address, // Store the address text directly
+            'order_number' => 'ORD-' . strtoupper(uniqid()),
+            'status' => $request->status,
+            'total_amount' => $request->total,
+            'notes' => $request->notes,
+        ]);
+
+        // Create order items (same as before)
+        foreach ($request->products as $key => $productId) {
+            $product = Product::findOrFail($productId);
+            $quantity = $request->quantities[$key];
+
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $productId,
+                'product_name' => $product->name,
+                'quantity' => $quantity,
+                'price' => $product->price,
+                'subtotal' => $product->price * $quantity,
+            ]);
+        }
 
         return redirect()->route('orders.index')->with('success', 'Order created successfully.');
     }

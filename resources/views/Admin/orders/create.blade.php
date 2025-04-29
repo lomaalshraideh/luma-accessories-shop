@@ -7,7 +7,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-dark shadow-dark border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">Create New Product</h6>
+                        <h6 class="text-white text-capitalize ps-3">Create New Order</h6>
                     </div>
 
                 </div>
@@ -30,14 +30,8 @@
                         <!-- Address -->
                         <div class="mb-3">
                             <label class="fw-bold">Address</label>
-                            <select name="address_id" class="form-control border border-dark" required>
-                                <option value="">Select address</option>
-                                @foreach($addresses as $address)
-                                    <option value="{{ $address->id }}">
-                                        {{ $address->city }}, {{ $address->street }} (User #{{ $address->user_id }})
-                                    </option>
-                                @endforeach
-                            </select>
+                            <input type="text" name="address" class="form-control border border-dark"
+                                   placeholder="Enter full address (e.g., Street, City, State, Postal Code)" required>
                         </div>
 
                         <!-- Order Items -->

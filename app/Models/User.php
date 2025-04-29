@@ -16,6 +16,7 @@ class User extends Authenticatable
         'email',
         'password',
         'phone',
+        'address',
     ];
 
     protected $hidden = [
@@ -54,6 +55,10 @@ public function testimonials()
 public function profile()
 {
     return $this->hasOne(UserProfile::class);
+}
+public function mainOrders()
+{
+    return $this->hasMany(MainOrder::class);
 }
 
 }

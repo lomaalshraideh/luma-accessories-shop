@@ -146,7 +146,7 @@
           </div>
 
           <div class="d-grid">
-            <a href="{{ route('main.checkout') }}" class="btn btn-primary btn-lg">
+            <a href="{{ route('checkout.index') }}" class="btn btn-primary btn-lg">
               Proceed to Checkout
             </a>
           </div>

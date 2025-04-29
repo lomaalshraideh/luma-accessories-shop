@@ -36,17 +36,23 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500', // Add address validation
         ]);
+
         User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
+            'name' => $request->name,
+            'email' => $request->email,
             'password' => Hash::make($request->password),
-            'remember_token' => Str::random(10),
+            'phone' => $request->phone,
+            'address' => $request->address, // Add address to creation
         ]);
-        return redirect()->route('users.index')->with('success', 'User created!');
+
+        return redirect()->route('users.index')
+            ->with('success', 'User created successfully!');
     }
 
     public function show($id)
@@ -65,16 +71,20 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $request->validate([
-            'name'  => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500', // Add address validation
         ]);
 
         $user->update([
-            'name'  => $request->name,
+            'name' => $request->name,
             'email' => $request->email,
+            'phone' => $request->phone, 
+            'address' => $request->address, // Add address to update
         ]);
 
-        return redirect()->route('users.index')->with('success', 'User updated!');
+        return redirect()->route('users.index')->with('success', 'User updated successfully!');
     }
 
 

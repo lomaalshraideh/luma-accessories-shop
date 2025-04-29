@@ -34,7 +34,7 @@
                                     <tr>
                                         <!-- Order ID -->
                                         <td>
-                                            <h6 class="mb-0 text-sm">{{ $order->id }}</h6>
+                                            <h6 class="mb-0 text-sm text-center">{{ $order->id }}</h6>
                                         </td>
 
                                         <!-- User Info -->
@@ -46,8 +46,8 @@
                                         <!-- Address -->
                                         <td>
                                             @if($order->address)
-                                                <p class="text-sm mb-0">{{ $order->address->city }}</p>
-                                                <p class="text-xs text-secondary mb-0">{{ $order->address->street }}</p>
+                                                <p class="text-sm mb-0">{{ $order->address }}</p>
+                                                {{-- <p class="text-xs text-secondary mb-0">{{ $order->address->street }}</p> --}}
                                             @else
                                                 <span class="text-muted text-xs">No Address</span>
                                             @endif

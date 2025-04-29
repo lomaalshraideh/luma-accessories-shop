@@ -48,6 +48,11 @@
                                 <input type="password" name="password_confirmation" class="form-control border-bottom" required>
                             </div>
                         </div>
+                            {{-- <div class="col-md-6 mb-4">
+                                <label class="form-label">Role</label>
+                                <input type="text" name="role" class="form-control border-bottom" required>
+                            </div> --}}
+                        </div>
 
                         <div class="text-end">
                             <button type="submit" class="btn bg-gradient-dark">Create Admin</button>

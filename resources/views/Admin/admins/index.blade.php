@@ -30,7 +30,7 @@
         <thead>
           <tr>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Admin</th>
-            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Role</th>
+            {{-- <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Role</th> --}}
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"></th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7"></th>
             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
@@ -41,19 +41,17 @@
           <tr>
             <td>
               <div class="d-flex px-2 py-1">
-                <div>
-                  <img src="../assets/img/team-2.jpg" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
-                </div>
+
                 <div class="d-flex flex-column justify-content-center">
                   <h6 class="mb-0 text-sm">{{ $admin->name }}</h6>
                   <p class="text-xs text-secondary mb-0">{{ $admin->email }}</p>
                 </div>
               </div>
             </td>
-            <td>
+            {{-- <td>
               <p class="text-xs font-weight-bold mb-0">{{ $admin->role }}</p>
 
-            </td>
+            </td> --}}
             <td class="align-middle text-center text-sm">
 
             </td>
@@ -78,13 +76,11 @@
                     @method('DELETE')
                 </form>
                 <button type="button" class="btn btn-danger"
-                onclick="confirmDelete({{ $admin->id }})"
-                data-toggle="tooltip"
-                data-original-title="Delete admin">
-                Delete
-            </button>
-                </form>
-
+                    onclick="confirmDelete({{ $admin->id }})"
+                    data-toggle="tooltip"
+                    data-original-title="Delete admin">
+                    Delete
+                </button>
             </td>
           </tr>
           @endforeach
@@ -97,12 +93,11 @@
 </div>
 @endsection
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    function confirmDelete(userId) {
+    function confirmDelete(adminId) {
         Swal.fire({
             title: 'Are you sure?',
-            text: "This user will be permanently deleted!",
+            text: "You won't be able to revert this!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
@@ -110,9 +105,31 @@
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById('delete-form-' + userId).submit();
+                document.getElementById('delete-form-' + adminId).submit();
             }
         });
     }
+
+    // Success message after redirect
+    @if(session('success'))
+    Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: '{{ session('success') }}',
+        timer: 3000,
+        timerProgressBar: true
+    });
+    @endif
+
+    // Error message if any
+    @if(session('error'))
+    Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: '{{ session('error') }}'
+    });
+    @endif
 </script>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endpush

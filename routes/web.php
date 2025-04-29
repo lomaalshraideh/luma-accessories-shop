@@ -21,6 +21,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MainProductController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Auth;
 
@@ -69,7 +70,7 @@ Route::prefix('admin')->middleware(AdminMiddleware::class)->group(function () {
     Route::resource('product-images', ProductImageController::class);
     Route::resource('product-reviews', ProductReviewController::class);
 
-    Route::post('logout', [LoginController::class, 'logout'])->name('admin.logout');
+    Route::post('logout', [AdminController::class, 'logout'])->name('admin.logout');
 
 } );
 Route::prefix('admin')->group(function () {
@@ -85,8 +86,6 @@ Route::resource('main-products', MainProductController::class)->except(['index']
 Route::get('/main-products', [MainController::class, 'products'])->name('main-products.index');
 // Route::post('/cart', [CartController::class, 'store'])->middleware('auth')->name('cart.store');
 Route::get('/', [MainController::class, 'index'])->name('landing');
-Route::get('/checkout', [MainController::class, 'checkout'])->name('main.checkout')->middleware('auth');
-
 
 Auth::routes();
 
@@ -111,6 +110,8 @@ Route::post('/wishlists/add-product', [WishlistController::class, 'addProduct'])
 
 // And make sure this route exists
 Route::post('/addresses', [AddressController::class, 'store'])->name('addresses.store');
+Route::put('/addresses/{address}', [AddressController::class, 'update'])->name('addresses.update');
+Route::delete('/addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
 
 // Add or update these routes for user profile
 Route::get('/profile', [\App\Http\Controllers\UserProfileController::class, 'show'])->middleware('auth')->name('main.user_profile');
@@ -118,5 +119,15 @@ Route::put('/profile/update', [\App\Http\Controllers\UserProfileController::clas
 
 // Add or update cart item routes
 Route::delete('/carts/items/{id}', [CartItemController::class, 'destroy'])->name('cart-items.destroy');
+
+// Main site order routes
+Route::middleware(['auth'])->group(function () {
+    // Checkout routes
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::get('/checkout/thankyou/{orderId}', [CheckoutController::class, 'thankyou'])
+    ->name('checkout.thankyou')
+    ->middleware('auth');
+});
 
 

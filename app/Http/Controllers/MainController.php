@@ -68,7 +68,7 @@ class MainController extends Controller
         // Calculate shipping
         $shipping = 10.00; // Default shipping cost
 
-        return view('Main.checkout', compact('cartItems', 'shipping'));
+        return view('Main.checkout.index', compact('cartItems', 'shipping'));
     }
 }
 

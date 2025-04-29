@@ -55,14 +55,15 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-check form-switch ps-0 ms-1 mt-4">
-                                    <input class="form-check-input ms-auto" type="checkbox" name="reset_password" id="resetPassword">
-                                    <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="resetPassword">Reset Password</label>
+                                <div class="input-group input-group-static mb-4">
+                                    <label>Address</label>
+                                    <input type="text" name="address" class="form-control" value="{{ old('address', $user->address) }}">
                                 </div>
                             </div>
+
                         </div>
 
-                        <div class="row password-fields" style="display: none;">
+                        <div class="row password-fields">
                             <div class="col-md-6">
                                 <div class="input-group input-group-static mb-4">
                                     <label>New Password</label>

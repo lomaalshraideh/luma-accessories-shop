@@ -20,21 +20,40 @@ class AddressController extends Controller
         return view('addresses.create', compact('users'));
     }
 
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'user_id' => 'required|exists:users,id',
+    //         'country' => 'required|string',
+    //         'city' => 'required|string',
+    //         'street' => 'required|string',
+    //         'zip_code' => 'nullable|string',
+    //         'phone' => 'nullable|string',
+    //     ]);
+
+    //     Address::create($request->all());
+
+    //     return redirect()->route('addresses.index')->with('success', 'Address created!');
+    // }
+
     public function store(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'country' => 'required|string',
-            'city' => 'required|string',
-            'street' => 'required|string',
-            'zip_code' => 'nullable|string',
-            'phone' => 'nullable|string',
-        ]);
+{
+    $request->validate([
+        'country' => 'required|string',
+        'city' => 'required|string',
+        'street' => 'required|string',
+        'zip_code' => 'nullable|string',
+        'phone' => 'nullable|string',
+    ]);
 
-        Address::create($request->all());
+    // Create address with authenticated user's ID
+    $address = new Address($request->all());
+    $address->user_id = auth()->id(); // Set user_id from authenticated user
+    $address->save();
 
-        return redirect()->route('addresses.index')->with('success', 'Address created!');
-    }
+    return back()->with('success', 'Address added successfully!')
+        ->withFragment('addresses'); // Return to the addresses tab
+}
 
     public function show(Address $address)
     {

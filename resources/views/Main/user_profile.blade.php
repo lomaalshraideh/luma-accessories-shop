@@ -152,52 +152,55 @@
         </div>
 
         <!-- Orders Tab -->
-        <div class="tab-pane fade" id="orders" role="tabpanel">
-          <div class="card border-0 shadow-sm rounded-4 mb-4">
-            <div class="card-header bg-white border-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
-              <h5 class="mb-0">My Orders</h5>
-            </div>
-            <div class="card-body p-0">
-              @if(auth()->user()->orders->count() > 0)
+        <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+            <h3 class="mb-4">Order History</h3>
+
+            @if($user->mainOrders->isEmpty())
+                <div class="alert alert-info">
+                    You haven't placed any orders yet.
+                </div>
+                <div class="text-center mt-4">
+                    <a href="{{ route('main-products.index') }}" class="btn btn-primary">Start Shopping</a>
+                </div>
+            @else
                 <div class="table-responsive">
-                  <table class="table table-hover mb-0">
-                    <thead>
-                      <tr>
-                        <th>Order #</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Total</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @foreach(auth()->user()->orders as $order)
-                      <tr>
-                        <td>{{ $order->id }}</td>
-                        <td>{{ $order->created_at->format('M d, Y') }}</td>
-                        <td><span class="badge bg-{{ $order->status == 'completed' ? 'success' : ($order->status == 'processing' ? 'warning' : 'secondary') }}">
-                          {{ ucfirst($order->status) }}
-                        </span></td>
-                        <td>${{ number_format($order->total_amount, 2) }}</td>
-                        <td>
-                          <a href="#" class="btn btn-sm btn-outline-primary">Details</a>
-                        </td>
-                      </tr>
-                      @endforeach
-                    </tbody>
-                  </table>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($user->mainOrders->take(5) as $order)
+                            <tr>
+                                <td>{{ $order->order_number }}</td>
+                                <td>{{ $order->created_at->format('M d, Y') }}</td>
+                                <td>
+                                    <span class="badge bg-{!!
+                                        $order->status === 'completed' ? 'success' :
+                                        ($order->status === 'cancelled' ? 'danger' :
+                                        ($order->status === 'processing' ? 'info' : 'warning'))
+                                    !!}">
+                                        {{ ucfirst($order->status) }}
+                                    </span>
+                                </td>
+                                <td>${{ number_format($order->total_amount, 2) }}</td>
+                                <td>
+                                    <a href="{{ route('main-orders.show', $order) }}" class="btn btn-sm btn-primary">View</a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
-              @else
-                <div class="text-center py-5">
-                  <div class="mb-3">
-                    <i class="bi bi-bag text-muted" style="font-size: 3rem;"></i>
-                  </div>
-                  <h6 class="mb-3">No orders yet</h6>
-                  <a href="{{ route('main-products.index') }}" class="btn btn-primary">Start Shopping</a>
+                <div class="text-end mt-3">
+                    <a href="{{ route('main-orders.index') }}" class="btn btn-outline-primary">View All Orders</a>
                 </div>
-              @endif
-            </div>
-          </div>
+            @endif
         </div>
 
         <!-- Wishlist Tab -->
@@ -289,24 +292,32 @@
                 <div class="row">
                   @foreach(auth()->user()->addresses as $address)
                     <div class="col-md-6 mb-4">
-                      <div class="card h-100 border {{ $address->is_default ? 'border-primary' : '' }}">
+                      <div class="card h-100">
                         <div class="card-body">
-                          @if($address->is_default)
-                            <span class="badge bg-primary mb-2">Default</span>
-                          @endif
-                          <h6>{{ $address->name }}</h6>
-                          <address class="mb-0 small">
-                            {{ $address->street_address }}<br>
-                            {{ $address->city }}, {{ $address->state }} {{ $address->postal_code }}<br>
-                            {{ $address->country }}<br>
-                            <abbr title="Phone">P:</abbr> {{ $address->phone }}
+                          <address class="mb-0">
+                            <strong>{{ $address->street }}</strong><br>
+                            {{ $address->city }}<br>
+                            {{ $address->country }} {{ $address->zip_code }}<br>
+                            @if($address->phone)
+                              <abbr title="Phone">P:</abbr> {{ $address->phone }}
+                            @endif
                           </address>
                         </div>
                         <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2">
-                          <button class="btn btn-sm btn-outline-secondary">Edit</button>
-                          @if(!$address->is_default)
-                            <button class="btn btn-sm btn-outline-primary">Set as Default</button>
-                          @endif
+                          <button type="button" class="btn btn-sm btn-outline-secondary edit-address-btn"
+                                  data-id="{{ $address->id }}"
+                                  data-country="{{ $address->country }}"
+                                  data-city="{{ $address->city }}"
+                                  data-street="{{ $address->street }}"
+                                  data-zip="{{ $address->zip_code }}"
+                                  data-phone="{{ $address->phone }}">
+                            Edit
+                          </button>
+                          <form action="{{ route('addresses.destroy', $address->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this address?')">Delete</button>
+                          </form>
                         </div>
                       </div>
                     </div>
@@ -410,42 +421,36 @@
       <form action="{{ route('addresses.store') }}" method="POST">
         @csrf
         <div class="modal-body">
-          <div class="mb-3">
-            <label for="name" class="form-label">Address Name</label>
-            <input type="text" class="form-control" id="name" name="name" required>
-            <div class="form-text">E.g., Home, Office, etc.</div>
-          </div>
-          <div class="mb-3">
-            <label for="street_address" class="form-label">Street Address</label>
-            <input type="text" class="form-control" id="street_address" name="street_address" required>
-          </div>
-          <div class="mb-3">
-            <label for="city" class="form-label">City</label>
-            <input type="text" class="form-control" id="city" name="city" required>
-          </div>
-          <!-- State field with error message -->
-          <div class="mb-3">
-            <label for="state" class="form-label">State/Province</label>
-            <input type="text" class="form-control @error('state') is-invalid @enderror" id="state" name="state" value="{{ old('state') }}" required>
-            @error('state')
-              <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-          </div>
-          <div class="mb-3">
-            <label for="postal_code" class="form-label">Postal/ZIP Code</label>
-            <input type="text" class="form-control" id="postal_code" name="postal_code" required>
-          </div>
+          <!-- Country field -->
           <div class="mb-3">
             <label for="country" class="form-label">Country</label>
             <input type="text" class="form-control" id="country" name="country" required>
           </div>
+
+          <!-- City field -->
+          <div class="mb-3">
+            <label for="city" class="form-label">City</label>
+            <input type="text" class="form-control" id="city" name="city" required>
+          </div>
+
+          <!-- Street field -->
+          <div class="mb-3">
+            <label for="street" class="form-label">Street</label>
+            <input type="text" class="form-control" id="street" name="street" required>
+          </div>
+
+          <!-- ZIP Code field -->
+          <div class="mb-3">
+            <label for="zip_code" class="form-label">ZIP Code</label>
+            <input type="text" class="form-control" id="zip_code" name="zip_code">
+            <div class="form-text">Optional</div>
+          </div>
+
+          <!-- Phone field -->
           <div class="mb-3">
             <label for="phone" class="form-label">Phone Number</label>
-            <input type="text" class="form-control" id="phone" name="phone" required>
-          </div>
-          <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="is_default" name="is_default">
-            <label class="form-check-label" for="is_default">Set as default address</label>
+            <input type="text" class="form-control" id="phone" name="phone">
+            <div class="form-text">Optional</div>
           </div>
         </div>
         <div class="modal-footer">
@@ -456,79 +461,91 @@
     </div>
   </div>
 </div>
+
+<!-- Edit Address Modal -->
+<div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="edit-address-form" method="POST" action="">
+        @csrf
+        @method('PUT')
+        <div class="modal-body">
+          <!-- Country field -->
+          <div class="mb-3">
+            <label for="edit_country" class="form-label">Country</label>
+            <input type="text" class="form-control" id="edit_country" name="country" required>
+          </div>
+
+          <!-- City field -->
+          <div class="mb-3">
+            <label for="edit_city" class="form-label">City</label>
+            <input type="text" class="form-control" id="edit_city" name="city" required>
+          </div>
+
+          <!-- Street field -->
+          <div class="mb-3">
+            <label for="edit_street" class="form-label">Street</label>
+            <input type="text" class="form-control" id="edit_street" name="street" required>
+          </div>
+
+          <!-- ZIP Code field -->
+          <div class="mb-3">
+            <label for="edit_zip_code" class="form-label">ZIP Code</label>
+            <input type="text" class="form-control" id="edit_zip_code" name="zip_code">
+          </div>
+
+          <!-- Phone field -->
+          <div class="mb-3">
+            <label for="edit_phone" class="form-label">Phone Number</label>
+            <input type="text" class="form-control" id="edit_phone" name="phone">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Update Address</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 @endsection
 
 @push('scripts')
 <script>
+  // Add to your existing DOMContentLoaded script
   document.addEventListener('DOMContentLoaded', function() {
-    // Handle tab activation based on URL hash
-    const hash = window.location.hash || '#account';
-    const tab = document.querySelector(`a[href="${hash}"]`);
-    if (tab) {
-      const bsTab = new bootstrap.Tab(tab);
-      bsTab.show();
-    }
+    // Edit address button handling
+    const editButtons = document.querySelectorAll('.edit-address-btn');
 
-    // Keep the tab active when a form within the tab is submitted
-    const forms = document.querySelectorAll('.tab-pane form');
-    forms.forEach(form => {
-      form.addEventListener('submit', function() {
-        const activeTab = document.querySelector('.nav-link.active');
-        if (activeTab) {
-          const tabId = activeTab.getAttribute('href');
-          if (tabId && !this.action.includes('#')) {
-            // Append the current tab as a fragment to the form action
-            this.action = this.action + (this.action.includes('?') ? '&' : '?') + 'tab=' + tabId.substring(1);
-          }
-        }
+    editButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const addressId = this.dataset.id;
+        const country = this.dataset.country;
+        const city = this.dataset.city;
+        const street = this.dataset.street;
+        const zipCode = this.dataset.zip;
+        const phone = this.dataset.phone;
+
+        // Create a modal for editing
+        const modal = new bootstrap.Modal(document.getElementById('editAddressModal'));
+
+        // Set form action
+        document.getElementById('edit-address-form').action = `/addresses/${addressId}`;
+
+        // Set form values
+        document.getElementById('edit_country').value = country;
+        document.getElementById('edit_city').value = city;
+        document.getElementById('edit_street').value = street;
+        document.getElementById('edit_zip_code').value = zipCode;
+        document.getElementById('edit_phone').value = phone;
+
+        modal.show();
       });
     });
-
-    // Preview avatar image
-    const avatarInput = document.querySelector('#avatar');
-    if (avatarInput) {
-      avatarInput.addEventListener('change', function() {
-        const file = this.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            // Create preview element if it doesn't exist
-            let previewContainer = document.querySelector('.avatar-preview');
-            if (!previewContainer) {
-              previewContainer = document.createElement('div');
-              previewContainer.className = 'avatar-preview mt-2';
-              avatarInput.parentNode.appendChild(previewContainer);
-            }
-
-            // Update preview content
-            previewContainer.innerHTML = `
-              <div class="d-flex align-items-center">
-                <img src="${e.target.result}" alt="Avatar preview" class="img-thumbnail me-2"
-                     style="width: 50px; height: 50px; object-fit: cover;">
-                <small class="text-muted">New profile picture preview</small>
-              </div>
-            `;
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-    }
-
-    // Add to your existing DOMContentLoaded script
-    const addressForm = document.querySelector('#addAddressModal form');
-    const addressModal = document.getElementById('addAddressModal');
-
-    if (addressForm && addressModal) {
-      // Reset form when modal is closed
-      addressModal.addEventListener('hidden.bs.modal', function () {
-        addressForm.reset();
-      });
-
-      // If there was a submission and we're on the addresses tab
-      if (window.location.hash === '#addresses' && "{{ session('success') }}".includes('Address')) {
-        // Show success message if needed
-      }
-    }
   });
 </script>
 @endpush

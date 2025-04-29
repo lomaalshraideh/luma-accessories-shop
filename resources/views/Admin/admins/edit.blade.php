@@ -11,23 +11,31 @@
                     </div>
                 </div>
                 <div class="card-body px-4 pb-2">
+                    <!-- Remove the Bootstrap alert -->
+
                     <form method="POST" action="{{ route('admins.update', $admin->id) }}">
                         @csrf
                         @method('PUT')
 
-                    <div class="input-group input-group-static mb-4 col-md-6">
-                            <label class="form-label">Name</label>
-                            <input type="text" name="name" value="{{ old('name', $admin->name) }}" class="form-control border-0 border-bottom" required>
+                        <div class="col-md-6">
+                            <div class="input-group input-group-static mb-4">
+                                <label>Name</label>
+                                <input type="text" name="name" value="{{ old('name', $admin->name) }}" class="form-control" required>
+                            </div>
                         </div>
 
-                        <div class="input-group input-group-static mb-4">
-                            <label class="form-label">Email</label>
-                            <input type="email" name="email" value="{{ old('email', $admin->email) }}" class="form-control border-0 border-bottom" required>
+                        <div class="col-md-6">
+                            <div class="input-group input-group-static mb-4">
+                                <label>Email</label>
+                                <input type="email" name="email" value="{{ old('email', $admin->email) }}" class="form-control" required>
+                            </div>
                         </div>
 
-                        <div class="input-group input-group-static mb-4">
-                            <label class="form-label">Password <small>(leave blank to keep current)</small></label>
-                            <input type="password" name="password" class="form-control border-0 border-bottom">
+                        <div class="col-md-6">
+                            <div class="input-group input-group-static mb-4">
+                                <label>Password <small>(leave blank to keep current)</small></label>
+                                <input type="password" name="password" class="form-control">
+                            </div>
                         </div>
 
                         <div class="d-flex justify-content-end gap-2">
@@ -41,3 +49,32 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    // Check if there's a success message in the session
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            toast: true,
+            position: 'top-end'
+        });
+    @endif
+
+    // Check if there are any validation errors
+    @if($errors->any())
+        Swal.fire({
+            icon: 'error',
+            title: 'Validation Error',
+            html: '<ul style="text-align: left;">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>',
+        });
+    @endif
+</script>
+@endpush
+
+
